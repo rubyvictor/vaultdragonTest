@@ -3,12 +3,18 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const express = require('express');
-const App = express()
+const app = express()
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Key = require('./models/Key');
 const keys = require('./routes/keys');
+
+app.use(morgan("short"));
+app.use(express.static("./public"));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -30,7 +36,7 @@ if (!isProduction) {
 
 
 
-
+app.use(router);
 
 const PORT = process.env.PORT || 3003;
 
