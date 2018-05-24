@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const { Key, Value } = require("../models/Key");
+const moment = require("moment");
 
 router.post("/object", async (req, res) => {
   console.log(req.body, "creating new key-value object");
   try {
     let key = req.body.key;
     let timestamp = Date.now();
-    timestamp = (timestamp - timestamp % 1000) / 1000;
+    timestamp = Math.round(timestamp / 1000);
     let value = req.body;
 
     for (let k in value) {
@@ -37,10 +38,10 @@ router.get("/object/:key", async (req, res) => {
   console.log("querying to find key");
   let timestamp = req.query.timestamp;
   if (timestamp) {
-    console.log("timestamp provided is", timestamp);
+    console.log("timestamp provided is", moment(timestamp).format("h:mm a"));
   } else {
     timestamp = Date.now();
-    timestamp = (timestamp - timestamp % 1000) / 1000;
+    timestamp = Math.round(timestamp / 1000);
     console.log("timestamp not in query, use current time:", timestamp);
   }
 
