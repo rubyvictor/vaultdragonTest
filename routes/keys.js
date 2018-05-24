@@ -45,4 +45,49 @@ router.post("/object", async (req, res) => {
   }
 });
 
+router.get("/object/:key", (req, res) => {
+  let key = req.params.key;
+  console.log("querying to find key");
+  let timestamp = req.query.timestamp;
+  if (timestamp) {
+    console.log("timestamp provided is", timestamp);
+  } else {
+    timestamp = Date.now();
+    timestamp = (timestamp - timestamp % 1000) / 1000;
+    console.log("timestamp not in query, use current time:", timestamp);
+  }
+
+  const query = { key: key };
+  Key.find(query, (err, res) => {
+    if (err) {
+      res.send(err.message);
+    } else if (res.length === 0) {
+      console.log("Key does not exist in db");
+      res.status(404).json({ message: "Key does not exist in db" });
+    } else {
+      let timeHolder = -1;
+      let index = -1;
+
+      for (let i = 0; i < res.length; i++) {
+        const item = res[i];
+        if (item.timestamp > timeHolder && item.timestamp <= timestamp) {
+          timeHolder = item.timestamp;
+          index = i;
+        }
+      }
+
+      if (index === -1) {
+        res.status(404).send({ message: "No such key at this timestamp" });
+      } else {
+        res.map(value => {
+          return { value: res[index].value };
+
+          console.log(value);
+          res.json(value);
+        });
+      }
+    }
+  });
+});
+
 module.exports = router;

@@ -29,7 +29,7 @@ const keySchema = mongoose.Schema(
     },
     value: {
       type: Object,
-      default: {}
+      default: ""
     }
   },
   options
