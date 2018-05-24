@@ -32,7 +32,7 @@ router.post("/object", async (req, res) => {
   }
 });
 
-router.get("/object/:key", (req, res) => {
+router.get("/object/:key", async (req, res) => {
   let key = req.params.key;
   console.log("querying to find key");
   let timestamp = req.query.timestamp;
@@ -44,11 +44,10 @@ router.get("/object/:key", (req, res) => {
     console.log("timestamp not in query, use current time:", timestamp);
   }
 
-  const queryString = key;
-  Key.find(queryString, (err, res) => {
+  await Key.find({ key }, (err, result) => {
     if (err) {
       res.send(err);
-    } else if (res.length === 0) {
+    } else if (result.length === 0) {
       console.log(res);
       console.log("Key does not exist in db");
       res.status(404).json({ message: "Key does not exist in db" });
@@ -56,8 +55,8 @@ router.get("/object/:key", (req, res) => {
       let timeHolder = -1;
       let index = -1;
 
-      for (let i = 0; i < res.length; i++) {
-        const item = res[i];
+      for (let i = 0; i < result.length; i++) {
+        const item = result[i];
         if (item.timestamp > timeHolder && item.timestamp <= timestamp) {
           timeHolder = item.timestamp;
           index = i;
@@ -67,10 +66,10 @@ router.get("/object/:key", (req, res) => {
       if (index === -1) {
         res.status(404).send({ message: "No such key at this timestamp" });
       } else {
-        const returnedValue = new Value({ value: res[index].value });
+        const returnedValue = new Value({ value: result[index].value });
+        console.log("value return from query:", returnedValue);
+        res.json(returnedValue);
       }
-      console.log("value return from query:", returnedValue);
-      res.json(returnedValue);
     }
   });
 });
