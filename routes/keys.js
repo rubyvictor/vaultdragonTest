@@ -6,7 +6,7 @@ router.post("/object", async (req, res) => {
   console.log(req.body, "creating new key-value object");
   try {
     let key = req.body.key;
-    let timestamp = date.now();
+    let timestamp = Date.now();
     timestamp = (timestamp - timestamp % 1000) / 1000;
     let value = req.body;
 

@@ -8,7 +8,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Key = require('./models/Key');
-const keys = require('./routes/keys');
+const router = require('./routes/keys');
 const index = require("./routes/index")
 
 app.use(morgan("short"));
@@ -27,7 +27,7 @@ mongoose.connect(dbUrl, {}).then(async () => {
 mongoose.connect(dbUrl, async function (err) {
   if (err)
     throw err;
-  console.log("successfully connected to books_db");
+  console.log("successfully connected to keys_db");
 
 });
 
