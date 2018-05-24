@@ -37,4 +37,15 @@ const keySchema = mongoose.Schema(
 
 const Key = mongoose.model("Key", keySchema);
 
-module.exports = Key;
+const ValueSchema = mongoose.Schema(
+  {
+    value: {
+      type: Object,
+      default: ""
+    }
+  },
+  options
+);
+
+const Value = mongoose.model("Value", ValueSchema);
+module.exports = { Value, Key };
