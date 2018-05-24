@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Key = require('./models/Key');
 const keys = require('./routes/keys');
+const index = require("./routes/index")
 
 app.use(morgan("short"));
 app.use(express.static("./public"));
@@ -34,8 +35,7 @@ if (!isProduction) {
   mongoose.set("debug", true);
 }
 
-
-
+app.use("/", index);
 app.use(router);
 
 const PORT = process.env.PORT || 3003;
