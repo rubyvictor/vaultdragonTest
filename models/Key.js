@@ -3,8 +3,8 @@
 const mongoose = require("mongoose");
 
 xTransform = (doc, ret) => {
-  delete doc.__v;
-  delete doc._id;
+  delete ret.__v;
+  delete ret._id;
   return ret;
 };
 
