@@ -38,7 +38,10 @@ router.get("/object/:key", async (req, res) => {
   console.log("querying to find key");
   let timestamp = req.query.timestamp;
   if (timestamp) {
-    console.log("timestamp provided is", moment(timestamp).format("h:mm a"));
+    console.log(
+      "timestamp provided is",
+      moment(timestamp*1000).format("YYYY-MM-DD h:mm a")
+    );
   } else {
     timestamp = Date.now();
     timestamp = Math.round(timestamp / 1000);
