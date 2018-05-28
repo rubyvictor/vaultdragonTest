@@ -18,6 +18,14 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test:watch": "jest --watch",
+    "start": "node app.js",
+    "start:nodemon": "nodemon app.js"
+  },
+
+  "devDependencies": {
+    "jest": "^22.4.2",
+    "supertest": "^3.1.0"
   }
 }
