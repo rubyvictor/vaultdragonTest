@@ -4,7 +4,6 @@ const { Key, Value } = require("../models/Key");
 const moment = require("moment");
 
 router.post("/object", async (req, res) => {
-  console.log(req.body, "creating new key-value object");
   try {
     let key = req.body.key;
     let timestamp = Date.now();
@@ -12,10 +11,9 @@ router.post("/object", async (req, res) => {
     let value = req.body;
 
     if (Object.keys(value).length != 1) {
-      const errorMessage = ({
+      const errorMessage = {
         message: "There must be a proper request body of a key and a value pair"
-      });
-      console.log(errorMessage);
+      };
       res.status(404).send(errorMessage);
       return;
     }
@@ -34,35 +32,29 @@ router.post("/object", async (req, res) => {
     });
 
     await newKey.save();
-    console.log("new Key value pair created:", newKey);
     res.send({ "Successfully created key value pair": newKey });
   } catch (error) {
-    console.log(res.status(404), error.message);
     res.send(error);
   }
 });
 
 router.get("/object/:key", async (req, res) => {
   let key = req.params.key;
-  console.log("querying to find key");
   let timestamp = req.query.timestamp;
   if (timestamp) {
     console.log(
       "timestamp provided is",
-      moment(timestamp*1000).format("YYYY-MM-DD h:mm a")
+      moment(timestamp * 1000).format("YYYY-MM-DD h:mm a")
     );
   } else {
     timestamp = Date.now();
     timestamp = Math.round(timestamp / 1000);
-    console.log("timestamp not in query, use current time:", timestamp);
   }
 
   await Key.find({ key }, (err, result) => {
     if (err) {
       res.send(err);
     } else if (result.length === 0) {
-      console.log(res);
-      console.log("Key does not exist in db");
       res.status(404).json({ message: "Key does not exist in db" });
     } else {
       let timeHolder = -1;
@@ -80,7 +72,6 @@ router.get("/object/:key", async (req, res) => {
         res.status(404).send({ message: "No such key at this timestamp" });
       } else {
         const returnedValue = new Value({ value: result[index].value });
-        console.log("value return from query:", returnedValue);
         res.json(returnedValue);
       }
     }
