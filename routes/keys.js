@@ -11,6 +11,15 @@ router.post("/object", async (req, res) => {
     timestamp = Math.round(timestamp / 1000);
     let value = req.body;
 
+    if (Object.keys(value).length != 1) {
+      const errorMessage = ({
+        message: "There must be a proper request body of a key and a value pair"
+      });
+      console.log(errorMessage);
+      res.status(404).send(errorMessage);
+      return;
+    }
+
     for (let k in value) {
       if (value.hasOwnProperty(k)) {
         key = k;
