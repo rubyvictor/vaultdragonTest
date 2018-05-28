@@ -61,9 +61,17 @@ describe("Initiate db and clear model", () => {
     it("GET /object/a_key should return message: key does not exist in db", async () => {
         const key = "a_key";
         const expectedKeyValuePair = await Key.find({ key });
-        const response = await request(app).get("/object/a-key");
+        const response = await request(app).get("/object/a_key");
         expect(response.status).toEqual(404);
         expect(response.body).toEqual({"message": "Key does not exist in db"});
+    });
+
+    it("GET /object/first_key?timestamp=200 should return message: no such key at this timestamp", async () => {
+        const key = "a_key";
+        const expectedKeyValuePair = await Key.find({ key });
+        const response = await request(app).get("/object/first_key?timestamp=200");
+        expect(response.status).toEqual(404);
+        expect(response.body).toEqual({ "message": "No such key at this timestamp" });
     });
 
 });
