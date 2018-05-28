@@ -74,4 +74,21 @@ describe("Initiate db and clear model", () => {
         expect(response.body).toEqual({ "message": "No such key at this timestamp" });
     });
 
+    describe('POST route', () => {
+        it('POST /object should create a key value pair in db', async () => {
+            const newKeyValuePair = {
+                "famousKey":"famous key"
+            }
+            const response = await request(app).post("/object").send(newKeyValuePair);
+            expect(response.status).toEqual(200);
+            expect(Object.keys(response.body).length).toEqual(1);
+        });
+
+        
+
+
+
+    });
+
+
 });
