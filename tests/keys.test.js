@@ -1,32 +1,37 @@
-process.env.NODE_ENV = "test";
+process.env.ENV = "test";
 
 const app = require("../App");
 const mongoose = require("mongoose");
-const Key = require("../models/Key");
+const { Key, Value } = require("../models/Key");
 const request = require("supertest");
 
-const message = "message";
-const key = "key";
-const value = "value";
-const timestamp = "timestamp";
-
-describe("routes/keys", () => {
+describe("Initiate db and clear model", () => {
   let db;
 
-  beforeAll(async () => {
+  beforeAll(async done => {
     const dbUri = "mongodb://localhost/keys_test_db";
     db = await mongoose.connect(dbUri, () => {
-      console.log("connected to test DB successfully");
+      console.log("connected to test DB successfully at " + dbUri);
     });
 
-    await Key.deleteMany().exec();
+    Key.remove({}, err => {
+      let keyValueEntry = new Key({
+        key: "first_key",
+        value: "key at first",
+        timestamp: 1000
+      });
+
+      keyValueEntry.save(() => {});
+      done();
+    });
   });
 
-  it("GET /object/myKey should accept a key and return the corresponding latest value", async () => {
-    const expectedKeyValuePair = await Key.find({key});
-    const response = await request(app).get("/object/myKey");
+  it("GET /object/first_key should return value of 'key at first'", async () => {
+    const key = "first_key";
+    const expectedKeyValuePair = await Key.find({ key });
+    const response = await request(app).get("/object/first_key");
     expect(response.status).toEqual(200);
     expect(response.header["content-type"]).toContain("application/json");
-    expect(response.body).toEqual(expectedKeyValuePair);
+    expect(response.body.value).toEqual(expectedKeyValuePair[0].value);
   });
 });
