@@ -21,17 +21,49 @@ describe("Initiate db and clear model", () => {
         timestamp: 1000
       });
 
+      let keyTwoValueEntry = new Key({
+        key: "first_key",
+        value: "key at second",
+        timestamp: 2000
+      });
+
+      let keyThreeValueEntry = new Key({
+        key: "first_key",
+        value: "key at third",
+        timestamp: 3000
+      });
+
       keyValueEntry.save(() => {});
+      keyTwoValueEntry.save(()=>{});
+      keyThreeValueEntry.save(()=>{});
       done();
     });
   });
 
-  it("GET /object/first_key should return value of 'key at first'", async () => {
+  it("GET /object/first_key should return latest value of 'key at first'", async () => {
     const key = "first_key";
     const expectedKeyValuePair = await Key.find({ key });
     const response = await request(app).get("/object/first_key");
     expect(response.status).toEqual(200);
     expect(response.header["content-type"]).toContain("application/json");
-    expect(response.body.value).toEqual(expectedKeyValuePair[0].value);
+    expect(response.body.value).toEqual("key at third");
   });
+
+  it("GET /object/first_key should return value of 'key at second' for timestamp=2500", async () => {
+      const key = "first_key";
+      const expectedKeyValuePair = await Key.find({ key });
+      const response = await request(app).get("/object/first_key?timestamp=2500");
+      expect(response.status).toEqual(200);
+      expect(response.header["content-type"]).toContain("application/json");
+      expect(response.body.value).toEqual("key at second");
+  });
+
+    it("GET /object/a_key should return message: key does not exist in db", async () => {
+        const key = "a_key";
+        const expectedKeyValuePair = await Key.find({ key });
+        const response = await request(app).get("/object/a-key");
+        expect(response.status).toEqual(404);
+        expect(response.body).toEqual({"message": "Key does not exist in db"});
+    });
+
 });
